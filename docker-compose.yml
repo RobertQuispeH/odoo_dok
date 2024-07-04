@@ -4,10 +4,11 @@ services:
     image: odoo:16.0
     depends_on:
       - db
+      - splunk
     ports:
       - "8069:8069"
     volumes:
-      - ./odoo-web-data:/var/lib/odoo  # Cambiado para mapear a un directorio local
+      - ./odoo-web-data:/var/lib/odoo # Cambiado para mapear a un directorio local
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
 
@@ -19,8 +20,17 @@ services:
       - POSTGRES_USER=odoo
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - ./odoo-db-data:/var/lib/postgresql/data/pgdata  # Cambiado para mapear a un directorio local
-
+      - ./odoo-db-data:/var/lib/postgresql/data/pgdata # Cambiado para mapear a un directorio local
+  splunk:
+    image: splunk/splunk:latest
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=Splunk#123 # Cambia esta contraseña según tus necesidades
+    ports:
+      - "8000:8000"
+    volumes:
+      - splunk-data:/opt/splunk/var
 volumes:
   odoo-web-data:
   odoo-db-data:
+  splunk-data:
